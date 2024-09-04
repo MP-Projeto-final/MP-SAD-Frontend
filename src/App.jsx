@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignupPage from "./pages/SignUp.jsx";
 import { useState, useContext } from "react";
 import AuthContext from "./constants/context";
+import LoginPage from "./pages/SignIn.jsx";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<SignupPage />} />
+            <Route path="/sign-in" element={<LoginPage />} />
           </Routes>
         </Router>
       </AuthContext.Provider>

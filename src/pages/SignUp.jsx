@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ export default function SignupPage() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const url = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -23,6 +25,7 @@ export default function SignupPage() {
       const response = await axios.post(url+'/sign-up', userData);
       alert('Cadastro realizado com sucesso!');
       console.log('Cadastro realizado:', response.data);
+      navigate('/sign-in');
     } catch (error) {
       alert('Erro ao realizar o cadastro.');
       console.error('Erro:', error.response ? error.response.data : error.message);
@@ -35,23 +38,22 @@ export default function SignupPage() {
         <Logo>
           <Heart />
           <Arrow />
-          <Box />
         </Logo>
       </ImageSection>
       <FormSection>
         <Title>Criar conta</Title>
-        <Subtitle>ou entrar com conta existente</Subtitle>
+        <Subtitle to="/sign-in">ou entrar com conta existente</Subtitle>
         <Form onSubmit={handleSignup}>
           <Input
             type="text"
-            placeholder="Apelido"
+            placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
           <Input
             type="email"
-            placeholder="Email"
+            placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -70,9 +72,8 @@ export default function SignupPage() {
             onChange={(e) => setPhone(e.target.value)}
             required
           />
-          <Button type="submit">Entrar</Button>
+          <Button type="submit">Cadastrar</Button>
         </Form>
-        <ForgotPassword href="#">Esqueci minha senha</ForgotPassword>
       </FormSection>
     </PageContainer>
   );
@@ -138,52 +139,20 @@ const Heart = styled.div`
 `;
 
 const Arrow = styled.div`
-  width: 0;
-  height: 0;
+
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-top: 30px solid white;
   position: absolute;
-  bottom: -80px;
 `;
 
-const Box = styled.div`
-  width: 100px;
-  height: 60px;
-  background-color: #e9c46a;
-  position: absolute;
-  bottom: -150px;
-  transform: perspective(100px) rotateX(30deg);
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -20px;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background-color: #f4a261;
-    transform: skew(-45deg);
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -20px;
-    width: 20px;
-    height: 100%;
-    background-color: #e76f51;
-    transform: skew(0, -45deg);
-  }
-`;
 
 const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 1rem;
 `;
 
-const Subtitle = styled.p`
+const Subtitle = styled(Link)`
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 2rem;
