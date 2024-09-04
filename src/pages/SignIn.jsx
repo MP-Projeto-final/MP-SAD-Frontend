@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../constants/context.js';
 import { Link } from 'react-router-dom';
+import SignInImg from '../assets/signin.png'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -40,7 +41,7 @@ export default function LoginPage() {
   return (
     <Container>
       <LeftSection>
-        <Heart />
+        <LogoImg src={SignInImg}></LogoImg>
       </LeftSection>
       <RightSection>
         <Logo>SAD</Logo>
@@ -129,6 +130,12 @@ const Logo = styled.h1`
   font-size: 4rem;
   color: #ffa500;
   margin-bottom: 1rem;
+  font-weight: bold;
+`;
+
+const LogoImg = styled.img`
+width: 100%;
+height: auto;
 `;
 
 const Subtitle = styled.p`
@@ -136,6 +143,7 @@ const Subtitle = styled.p`
   color: #ffa500;
   text-align: center;
   margin-bottom: 2rem;
+  font-weight: bold;
 `;
 
 const Form = styled.form`
@@ -149,6 +157,7 @@ const Input = styled.input`
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem;
 `;
 
 const Button = styled.button`
@@ -160,7 +169,7 @@ const Button = styled.button`
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-
+  font-size: 1rem;
   &:hover {
     background-color: #00b8e6;
   }
