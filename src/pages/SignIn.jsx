@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import AuthContext from '../constants/context';
+import AuthContext from '../constants/context.js';
 import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
@@ -15,40 +15,32 @@ export default function LoginPage() {
   const handleSignIn = async (e) => {
     e.preventDefault();
     const login = { email, password };
-
-    try {
-      const res = await axios.post(`${url}/sign-in`, login);
-      
-      console.log('Login realizado com sucesso:', res.data);
-      
-      // Armazena o token e nome do usuário no localStorage
-      const newUser = {
-        token: res.data.token,
-        username: res.data.username
-      };
-      const newIdUser = {
-        idUser: res.data.userId,
-      };
-      
-      localStorage.setItem("user", JSON.stringify(newUser));
-      localStorage.setItem("idUser", JSON.stringify(newIdUser));
-      
-      // Atualiza o contexto de usuário com o token e redireciona para home
-      setUser(newUser);
-      alert('Login realizado com sucesso!');
-      navigate("/home");
-      
-    } catch (error) {
+    axios.post(url+'/login', login)
+      .then((res) => {
+        const newUser = {
+            token: res.data.token,
+            username: res.data.username
+        };
+        console.log('Login realizado com sucesso:', res.data);
+        const newIdUser = {
+            idUser: res.data.userId,
+        };
+        setUser(newUser);
+        localStorage.setItem("user", JSON.stringify(newUser));
+        localStorage.setItem("idUser", JSON.stringify(newIdUser));
+        alert('Login realizado com sucesso!');
+        navigate("/");
+    })
+     .catch ((error) => {
       console.error('Erro ao realizar login:', error);
       alert('Erro ao realizar login. Verifique suas credenciais.');
-    }
+    });
   };
 
   return (
     <Container>
       <LeftSection>
         <Heart />
-        <Hand />
       </LeftSection>
       <RightSection>
         <Logo>SAD</Logo>
@@ -121,39 +113,6 @@ const Heart = styled.div`
   &:after {
     top: 0;
     left: 100px;
-  }
-`;
-
-const Hand = styled.div`
-  width: 100px;
-  height: 40px;
-  background-color: white;
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 20px 20px 0 0;
-
-  &:before {
-    content: "";
-    width: 20px;
-    height: 60px;
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-    left: 20px;
-    border-radius: 10px;
-  }
-
-  &:after {
-    content: "";
-    width: 20px;
-    height: 60px;
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-    right: 20px;
-    border-radius: 10px;
   }
 `;
 
