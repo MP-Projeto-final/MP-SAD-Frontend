@@ -1,5 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+
+export default function SignupPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const url = import.meta.env.VITE_API_URL;
+
+  const handleSignup = async (event) => {
+    event.preventDefault();
+
+    const userData = {
+      email,
+      password,
+      name,
+      phone,
+    };
+
+    try {
+      const response = await axios.post(url+'/sign-up', userData);
+      alert('Cadastro realizado com sucesso!');
+      console.log('Cadastro realizado:', response.data);
+    } catch (error) {
+      alert('Erro ao realizar o cadastro.');
+      console.error('Erro:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  return (
+    <PageContainer>
+      <ImageSection>
+        <Logo>
+          <Heart />
+          <Arrow />
+          <Box />
+        </Logo>
+      </ImageSection>
+      <FormSection>
+        <Title>Criar conta</Title>
+        <Subtitle>ou entrar com conta existente</Subtitle>
+        <Form onSubmit={handleSignup}>
+          <Input
+            type="text"
+            placeholder="Apelido"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <Input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <Input
+            type="text"
+            placeholder="Telefone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+          <Button type="submit">Entrar</Button>
+        </Form>
+        <ForgotPassword href="#">Esqueci minha senha</ForgotPassword>
+      </FormSection>
+    </PageContainer>
+  );
+}
 
 const PageContainer = styled.div`
   display: flex;
@@ -151,28 +228,3 @@ const ForgotPassword = styled.a`
     text-decoration: underline;
   }
 `;
-
-export default function SignupPage() {
-  return (
-    <PageContainer>
-      <ImageSection>
-        <Logo>
-          <Heart />
-          <Arrow />
-          <Box />
-        </Logo>
-      </ImageSection>
-      <FormSection>
-        <Title>Criar conta</Title>
-        <Subtitle>ou entrar com conta existente</Subtitle>
-        <Form>
-          <Input type="text" placeholder="Apelido" />
-          <Input type="email" placeholder="Email" />
-          <Input type="password" placeholder="Senha" />
-          <Button type="submit">Entrar</Button>
-        </Form>
-        <ForgotPassword href="#">Esqueci minha senha</ForgotPassword>
-      </FormSection>
-    </PageContainer>
-  );
-}

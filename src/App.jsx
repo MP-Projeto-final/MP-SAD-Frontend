@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import SignupPage from "./pages/Cadastro";
+import SignupPage from "./pages/SignUp.jsx";
 import { useState, useContext } from "react";
 import AuthContext from "./constants/context";
 
