@@ -4,6 +4,9 @@ import SignupPage from "./pages/SignUp.jsx";
 import { useState, useContext } from "react";
 import AuthContext from "./constants/context";
 import LoginPage from "./pages/SignIn.jsx";
+import StatisticsPage from "./pages/Stats.jsx";
+import DonationForm from "./pages/DonationForm.jsx";
+import MyDonations from "./pages/MyDonations.jsx";
 
 
 function App() {
@@ -15,6 +18,9 @@ function App() {
           <Routes>
             <Route path="/" element={<SignupPage />} />
             <Route path="/sign-in" element={<LoginPage />} />
+            <Route path="/stats" element={<StatisticsPage />} /> 
+            <Route path="/donate" element={<DonationForm />} /> 
+            <Route path="/mydonations" element={<MyDonations />} />  
           </Routes>
         </Router>
       </AuthContext.Provider>

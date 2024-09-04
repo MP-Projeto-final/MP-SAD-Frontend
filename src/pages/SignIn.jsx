@@ -29,7 +29,7 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(newUser));
         localStorage.setItem("idUser", JSON.stringify(newIdUser));
         alert('Login realizado com sucesso!');
-        navigate("/home");
+        navigate("/stats");
     })
      .catch ((error) => {
       console.error('Erro ao realizar login:', error);
