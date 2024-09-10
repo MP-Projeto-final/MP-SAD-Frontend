@@ -9,7 +9,6 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Recupera as informações do usuário do localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       setUser(storedUser);
@@ -21,7 +20,6 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // Remove o token do localStorage
     localStorage.removeItem('user');
     setUser(null);
     navigate('/login');
