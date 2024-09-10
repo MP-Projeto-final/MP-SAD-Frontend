@@ -101,7 +101,6 @@ export default function DonationDetailsPage() {
 
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
-  padding: 20px;
 
   border-radius: 10px;
 `;
