@@ -9,7 +9,7 @@ import DonationForm from "./pages/DonationForm.jsx";
 import MyDonations from "./pages/MyDonations.jsx";
 import DonationDetails from "./pages/DonationDetails.jsx";
 import QRCodeUpload from "./pages/UploadQrcode.jsx";
-import PackageUpdate from "./pages/Transportation.jsx";
+import PackageUpdate from "./pages/PackageStatus.jsx";
 
 
 function App() {
