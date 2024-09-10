@@ -9,6 +9,7 @@ import DonationForm from "./pages/DonationForm.jsx";
 import MyDonations from "./pages/MyDonations.jsx";
 import DonationDetails from "./pages/DonationDetails.jsx";
 import QRCodeUpload from "./pages/UploadQrcode.jsx";
+import PackageUpdate from "./pages/Transportation.jsx";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/mydonations" element={<MyDonations />} />  
             <Route path="/donation/:id" element={<DonationDetails />} />
             <Route path="/upload" element={<QRCodeUpload />} />
+            <Route path="/update" element={<PackageUpdate />} />
           </Routes>
         </Router>
       </AuthContext.Provider>
