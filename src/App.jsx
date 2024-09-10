@@ -7,6 +7,7 @@ import LoginPage from "./pages/SignIn.jsx";
 import StatisticsPage from "./pages/Stats.jsx";
 import DonationForm from "./pages/DonationForm.jsx";
 import MyDonations from "./pages/MyDonations.jsx";
+import { DonationDetails } from "./pages/DonationDetails.jsx";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/stats" element={<StatisticsPage />} /> 
             <Route path="/donate" element={<DonationForm />} /> 
             <Route path="/mydonations" element={<MyDonations />} />  
+            <Route path="/donation/:id" element={<DonationDetails />} />
           </Routes>
         </Router>
       </AuthContext.Provider>

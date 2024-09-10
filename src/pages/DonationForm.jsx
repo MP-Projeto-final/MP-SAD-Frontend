@@ -56,6 +56,13 @@ export default function DonationFormPage() {
     }
   };
 
+  const handleDownloadQrCode = () => {
+    const link = document.createElement('a');
+    link.href = qrCode; // A string base64 da imagem do QR code
+    link.download = 'qrcode.png'; // Nome do arquivo que será baixado
+    link.click(); // Simula o clique no link para baixar o arquivo
+  };
+
   return (
     <PageContainer>
       <Header />
@@ -115,6 +122,9 @@ export default function DonationFormPage() {
           <Title>Doação cadastrada com sucesso!</Title>
           <p>Escaneie o QR code para acompanhar a entrega da sua doação:</p>
           {qrCode && <QrCodeImage src={qrCode} alt="QR Code da Doação" />}
+          <DownloadButton onClick={handleDownloadQrCode}>
+            Baixar QR Code
+          </DownloadButton>
         </QrCodeContainer>
         )}
       </Content>
@@ -164,6 +174,28 @@ const Input = styled.input`
   }
 `;
 
+const DownloadButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #ffa500;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #ff8800;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+  }
+`;
+
 const SubmitButton = styled.button`
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -187,6 +219,9 @@ const SubmitButton = styled.button`
 `;
 
 const QrCodeContainer = styled.div`
+display: flex;  
+flex-direction: column;
+align-items: center;
   text-align: center;
 `;
 
