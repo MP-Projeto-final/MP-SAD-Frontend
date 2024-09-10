@@ -1,15 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Header from '../components/Header.jsx';
+import axios from 'axios';
+import Header from '../components/Header';
 
 const MyDonations = () => {
-  const donations = [
-    { title: 'Cesta básica', status: 'entregue', icon: '📦', bgColor: '#e8f5e9' },
-    { title: 'Kit cobertor', status: 'A caminho', icon: '🚚', bgColor: '#fff3e0' },
-    { title: 'Peças de roupas', status: 'A ser buscado', icon: '🏠', bgColor: '#e3f2fd' },
-    { title: 'Cesta básica', status: 'A ser buscado', icon: '🏠', bgColor: '#e3f2fd' },
-    { title: 'Minion de pelúcia', status: 'A caminho', icon: '🚚', bgColor: '#fff3e0' },
-  ];
+  const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDonations = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
+
+      if (!token) {
+        alert('Usuário não autenticado. Redirecionando para login.');
+        navigate('/login'); 
+        return;
+      }
+      try {
+
+        const response = await axios.get('http://localhost:4000/my', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        setDonations(response.data);
+      } catch (err) {
+        setError('Erro ao buscar doações');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDonations();
+  }, []);
+
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <PageContainer>
@@ -19,11 +48,11 @@ const MyDonations = () => {
         <DonationList>
           {donations.map((donation, index) => (
             <DonationItem key={index}>
-              <IconWrapper bgColor={donation.bgColor}>
-                <Icon>{donation.icon}</Icon>
+              <IconWrapper bgColor={getBgColorByStatus(donation.status)}>
+                <Icon>{getIconByStatus(donation.status)}</Icon>
               </IconWrapper>
               <DonationInfo>
-                <DonationTitle>{donation.title}</DonationTitle>
+                <DonationTitle>{donation.descricao}</DonationTitle>
                 <DonationStatus>{donation.status}</DonationStatus>
               </DonationInfo>
             </DonationItem>
@@ -34,18 +63,41 @@ const MyDonations = () => {
   );
 };
 
+const getIconByStatus = (status) => {
+  switch (status) {
+    case 'entregue':
+      return '📦';
+    case 'em_transito':
+      return '🚚';
+    case 'a_ser_buscado':
+      return '🏠';
+    default:
+      return '❓';
+  }
+};
+
+const getBgColorByStatus = (status) => {
+  switch (status) {
+    case 'entregue':
+      return '#e8f5e9';
+    case 'em_transito':
+      return '#fff3e0';
+    case 'a_ser_buscado':
+      return '#e3f2fd';
+    default:
+      return '#f5f5f5';
+  }
+};
+
 export default MyDonations;
 
-
-
-const PageContainer = styled.div`
-`;
+const PageContainer = styled.div``;
 
 const Content = styled.main`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
 `;
 
 const Title = styled.h1`
@@ -55,8 +107,8 @@ const Title = styled.h1`
 `;
 
 const DonationList = styled.ul`
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 `;
 
 const DonationItem = styled.li`
@@ -73,7 +125,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 20px;
-  background-color: ${props => props.bgColor};
+  background-color: ${(props) => props.bgColor};
 `;
 
 const Icon = styled.span`
@@ -83,7 +135,7 @@ const Icon = styled.span`
 const DonationInfo = styled.div``;
 
 const DonationTitle = styled.h3`
-    font-size: 1.2rem;
+  font-size: 1.2rem;
   margin: 0;
 `;
 
