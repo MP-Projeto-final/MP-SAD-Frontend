@@ -35,7 +35,7 @@ export default function Header() {
         <NavItem to='/donate'>Doar</NavItem>
         <NavItem to='/mydonations'>Minhas doações</NavItem>
         <NavItem to='/upload'>Ler QRcode</NavItem>
-        <NavItem to='/Transportadora'>Login</NavItem>
+        <NavItem to='/Transportadora'>Transportadora</NavItem>
       </Nav>
       <IconContainer>
         <IconButton>
