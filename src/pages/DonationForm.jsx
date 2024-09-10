@@ -58,9 +58,9 @@ export default function DonationFormPage() {
 
   const handleDownloadQrCode = () => {
     const link = document.createElement('a');
-    link.href = qrCode; // A string base64 da imagem do QR code
-    link.download = 'qrcode.png'; // Nome do arquivo que será baixado
-    link.click(); // Simula o clique no link para baixar o arquivo
+    link.href = qrCode; 
+    link.download = 'qrcode.png'; 
+    link.click(); 
   };
 
   return (
