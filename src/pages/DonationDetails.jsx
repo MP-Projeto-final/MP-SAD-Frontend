@@ -1,14 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Box, Clock, Home } from 'lucide-react';
-import { useParams, useNavigate } from 'react-router-dom'; // Para capturar o ID da URL e navegação
+import { useParams, useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-import Header from '../components/Header'; // Se tiver um Header
+import Header from '../components/Header'; 
+
+export default function DonationDetailsPage() {
+  const { id } = useParams(); 
+  const [donationDetails, setDonationDetails] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    const fetchDonationDetails = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
+
+      if (!token) {
+        alert('Usuário não autenticado. Redirecionando para login.');
+        navigate('/login'); 
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:4000/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setDonationDetails(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Erro ao buscar detalhes da doação');
+        setLoading(false);
+      }
+    };
+
+    fetchDonationDetails();
+  }, [id, navigate]); 
+
+  if (loading) {
+    return <p>Carregando...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  return (
+    <PageContainer>
+      <Header />
+      <Title>Detalhes da doação</Title>
+
+      {donationDetails && (
+        <DonationCard>
+          <DonationHeader>
+            <IconWrapper>
+              <Box size={24} />
+            </IconWrapper>
+            <DonationInfo>
+              <DonationTitle>{donationDetails.descricao}</DonationTitle>
+              <DonationStatus>{donationDetails.status}</DonationStatus>
+            </DonationInfo>
+          </DonationHeader>
+
+          <DetailsRow>
+            <Clock size={18} />
+            <DetailText>
+              Saída: {donationDetails.data_enviado ? donationDetails.data_enviado : 'Ainda não enviado'}
+              <br />
+              Chegada: {donationDetails.data_status ? donationDetails.data_status : 'Ainda não entregue'}
+            </DetailText>
+          </DetailsRow>
+
+          <DetailsRow>
+            <Home size={18} />
+            <DetailText>
+              {donationDetails.destino_cidade} - {donationDetails.destino_estado}
+              <br />
+              {donationDetails.destino_rua}, {donationDetails.destino_numero}, {donationDetails.destino_bairro}
+              <br />
+              {donationDetails.destino_complemento}
+            </DetailText>
+          </DetailsRow>
+
+          <DescriptionInput defaultValue={donationDetails.descricao} readOnly />
+
+          <ImageGrid>
+            <ImagePlaceholder>Imagem</ImagePlaceholder>
+            <ImagePlaceholder>Imagem</ImagePlaceholder>
+            <ImagePlaceholder>Imagem</ImagePlaceholder>
+            <ImagePlaceholder>+1</ImagePlaceholder>
+          </ImageGrid>
+        </DonationCard>
+      )}
+    </PageContainer>
+  );
+}
 
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #f5f5f5;
+
   border-radius: 10px;
 `;
 
@@ -93,99 +187,3 @@ const ImagePlaceholder = styled.div`
   font-size: 0.9em;
   color: #666;
 `;
-
-export default function DonationDetailsPage() {
-  const { id } = useParams(); // Captura o ID da doação a partir dos parâmetros da URL
-  const [donationDetails, setDonationDetails] = useState(null); // Armazena os dados da doação
-  const [loading, setLoading] = useState(true); // Para mostrar que os dados estão sendo carregados
-  const [error, setError] = useState(null); // Armazena o erro, se houver
-  const navigate = useNavigate(); // Para redirecionar o usuário em caso de erro
-
-  // Função que busca os detalhes da doação
-  useEffect(() => {
-    const fetchDonationDetails = async () => {
-      // Recupera o token do usuário
-      const user = JSON.parse(localStorage.getItem('user'));
-      const token = user?.token;
-
-      if (!token) {
-        alert('Usuário não autenticado. Redirecionando para login.');
-        navigate('/login'); // Redireciona para a página de login se o usuário não estiver autenticado
-        return;
-      }
-
-      try {
-        const response = await axios.get(`http://localhost:4000/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setDonationDetails(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Erro ao buscar detalhes da doação');
-        setLoading(false);
-      }
-    };
-
-    fetchDonationDetails();
-  }, [id, navigate]); 
-
-  if (loading) {
-    return <p>Carregando...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  return (
-    <PageContainer>
-      <Header />
-      <Title>Detalhes da doação</Title>
-
-      {donationDetails && (
-        <DonationCard>
-          <DonationHeader>
-            <IconWrapper>
-              <Box size={24} />
-            </IconWrapper>
-            <DonationInfo>
-              <DonationTitle>{donationDetails.descricao}</DonationTitle>
-              <DonationStatus>{donationDetails.status}</DonationStatus>
-            </DonationInfo>
-          </DonationHeader>
-
-          <DetailsRow>
-            <Clock size={18} />
-            <DetailText>
-              Saída: {donationDetails.data_enviado ? donationDetails.data_enviado : 'Ainda não enviado'}
-              <br />
-              Chegada: {donationDetails.data_status ? donationDetails.data_status : 'Ainda não entregue'}
-            </DetailText>
-          </DetailsRow>
-
-          <DetailsRow>
-            <Home size={18} />
-            <DetailText>
-              {donationDetails.destino_cidade} - {donationDetails.destino_estado}
-              <br />
-              {donationDetails.destino_rua}, {donationDetails.destino_numero}, {donationDetails.destino_bairro}
-              <br />
-              {donationDetails.destino_complemento}
-            </DetailText>
-          </DetailsRow>
-
-          <DescriptionInput defaultValue={donationDetails.descricao} readOnly />
-
-          <ImageGrid>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>+1</ImagePlaceholder>
-          </ImageGrid>
-        </DonationCard>
-      )}
-    </PageContainer>
-  );
-}
