@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Bell, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Recupera as informações do usuário do localStorage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleLogout = () => {
+    // Remove o token do localStorage
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
   };
 
   return (
@@ -29,7 +46,7 @@ export default function Header() {
           {dropdownVisible && (
             <DropdownMenu>
               <DropdownItem to="/profile">Meu perfil</DropdownItem>
-              <DropdownItem to="/logout">Sair</DropdownItem>
+              <DropdownItem as="button" onClick={handleLogout}>Sair</DropdownItem>
             </DropdownMenu>
           )}
         </UserContainer>
@@ -92,7 +109,7 @@ const UserContainer = styled.div`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: 40px; /* Adjust this to fit below the icon */
+  top: 40px;
   right: 0;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
