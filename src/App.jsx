@@ -7,7 +7,7 @@ import LoginPage from "./pages/SignIn.jsx";
 import StatisticsPage from "./pages/Stats.jsx";
 import DonationForm from "./pages/DonationForm.jsx";
 import MyDonations from "./pages/MyDonations.jsx";
-import { DonationDetails } from "./pages/DonationDetails.jsx";
+import DonationDetails from "./pages/DonationDetails.jsx";
 
 
 function App() {
