@@ -73,7 +73,7 @@ export default function QRCodeUpload() {
             id="qr-code-upload"
           />
           <UploadLabel htmlFor="qr-code-upload">
-            <Upload size={48} color="#007bff" />
+            <Upload size={48} color="#FAA630" />
             <UploadText>Clique aqui para fazer upload</UploadText>
           </UploadLabel>
         </UploadContainer>
@@ -99,8 +99,9 @@ const PageContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #333;
-  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 `;
 
 const UploadContainer = styled.div`
@@ -115,7 +116,7 @@ const UploadContainer = styled.div`
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #007bff;
+    border-color: #FAA630;
   }
 `;
 
@@ -136,6 +137,9 @@ const UploadText = styled.span`
 `;
 
 const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 2rem;
   max-width: 300px;
 `;
@@ -149,7 +153,7 @@ const PreviewImage = styled.img`
 const Button = styled.button`
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+  background-color: black;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -158,6 +162,6 @@ const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color:#FAA630 ;
   }
 `;
