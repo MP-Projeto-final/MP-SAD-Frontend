@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import axios from 'axios';
 
-// Lista de estados brasileiros
 const estadosBrasil = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
 ];
@@ -15,10 +14,10 @@ export default function DonationFormPage() {
   const [numero, setNumero] = useState('');
   const [complemento, setComplemento] = useState('');
   const [bairro, setBairro] = useState('');
-  const [cidadeDestino, setCidadeDestino] = useState(''); // Novo campo para cidade de destino
-  const [estadoDestino, setEstadoDestino] = useState(''); // Novo campo para estado de destino
-  const [cidadeOrigem, setCidadeOrigem] = useState(''); // Novo campo para cidade de origem
-  const [estadoOrigem, setEstadoOrigem] = useState(''); // Novo campo para estado de origem
+  const [cidadeDestino, setCidadeDestino] = useState(''); 
+  const [estadoDestino, setEstadoDestino] = useState(''); 
+  const [cidadeOrigem, setCidadeOrigem] = useState(''); 
+  const [estadoOrigem, setEstadoOrigem] = useState(''); 
   const [qrCode, setQrCode] = useState(null); 
   const [formVisible, setFormVisible] = useState(true); 
 
@@ -40,10 +39,10 @@ export default function DonationFormPage() {
       destino_numero: numero,
       destino_complemento: complemento,
       destino_bairro: bairro,
-      destino_cidade: cidadeDestino, // Inclui a cidade de destino
-      destino_estado: estadoDestino, // Inclui o estado de destino
-      origem_cidade: cidadeOrigem, // Inclui a cidade de origem
-      origem_estado: estadoOrigem // Inclui o estado de origem
+      destino_cidade: cidadeDestino, 
+      destino_estado: estadoDestino, 
+      origem_cidade: cidadeOrigem, 
+      origem_estado: estadoOrigem 
     };
 
     try {
@@ -72,7 +71,7 @@ export default function DonationFormPage() {
     }
   
     const link = document.createElement('a');
-    link.href = qrCode;  // Certifique-se de que qrCode é uma string válida com 'data:image/png;base64,...'
+    link.href = qrCode; 
     link.download = 'qrcode.png'; 
     link.click();
   };
