@@ -65,26 +65,26 @@ const MyDonations = () => {
 const getIconByStatus = (status) => {
   switch (status.toLowerCase()) {
     case 'criado':
-      return '📦';  // Pacote criado
+      return '📦';  
     case 'em_transito':
-      return '🚚';  // Pacote em trânsito
+      return '🚚';  
     case 'entregue':
-      return '🏠';  // Pacote entregue
+      return '🏠';  
     default:
-      return '❓';  // Status desconhecido
+      return '❓';  
   }
 };
 
 const getBgColorByStatus = (status) => {
   switch (status.toLowerCase()) {
     case 'criado':
-      return '#e8f5e9';  // Verde claro
+      return '#e8f5e9';  
     case 'em_transito':
-      return '#fff3e0';  // Laranja claro
+      return '#fff3e0';  
     case 'entregue':
-      return '#e3f2fd';  // Azul claro
+      return '#e3f2fd';  
     default:
-      return '#f5f5f5';  // Cinza claro
+      return '#f5f5f5'; 
   }
 };
 

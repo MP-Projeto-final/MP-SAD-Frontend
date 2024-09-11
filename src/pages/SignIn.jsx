@@ -22,15 +22,13 @@ export default function LoginPage() {
             token: res.data.token,
             username: res.data.username
         };
-        console.log('Login realizado com sucesso:', res.data);
         const newIdUser = {
             idUser: res.data.userId,
         };
         setUser(newUser);
         localStorage.setItem("user", JSON.stringify(newUser));
         localStorage.setItem("idUser", JSON.stringify(newIdUser));
-        alert('Login realizado com sucesso!');
-        navigate("/stats");
+        navigate("/");
     })
      .catch ((error) => {
       console.error('Erro ao realizar login:', error);
@@ -63,8 +61,7 @@ export default function LoginPage() {
           />
           <Button type="submit">Entrar</Button>
         </Form>
-        <ForgotPassword to="/">Não tem conta? Cadastre-se aqui!</ForgotPassword>
-        <ForgotPassword href="#">Esqueci minha senha</ForgotPassword>
+        <ForgotPassword to="/sign-up">Não tem conta? Cadastre-se aqui!</ForgotPassword>
       </RightSection>
     </Container>
   );
@@ -78,43 +75,11 @@ const Container = styled.div`
 
 const LeftSection = styled.div`
   flex: 1;
-  background-color: #00b8e6;
+  background-color: #28B3E7;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-`;
-
-const Heart = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: #ff6b6b;
-  transform: rotate(-45deg);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -100px;
-  margin-left: -100px;
-
-  &:before,
-  &:after {
-    content: "";
-    width: 200px;
-    height: 200px;
-    background-color: #ff6b6b;
-    border-radius: 50%;
-    position: absolute;
-  }
-
-  &:before {
-    top: -100px;
-    left: 0;
-  }
-
-  &:after {
-    top: 0;
-    left: 100px;
-  }
 `;
 
 const RightSection = styled.div`
@@ -134,8 +99,8 @@ const Logo = styled.h1`
 `;
 
 const LogoImg = styled.img`
-width: 100%;
-height: auto;
+  width: 100%;
+  height: auto;
 `;
 
 const Subtitle = styled.p`
@@ -171,7 +136,7 @@ const Button = styled.button`
   font-weight: bold;
   font-size: 1rem;
   &:hover {
-    background-color: #00b8e6;
+    background-color: #FAA630;
   }
 `;
 

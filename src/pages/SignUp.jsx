@@ -103,19 +103,15 @@ const FormSection = styled.div`
 const Logo = styled.img`
   width: 100%;
   height: auto;
-
-
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-
-
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 4rem;
+  color: #ffa500;
   margin-bottom: 1rem;
-  color: black;
   font-weight: bold;
 `;
 

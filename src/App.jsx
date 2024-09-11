@@ -19,9 +19,9 @@ function App() {
       <AuthContext.Provider value={{ user, setUser }}>
         <Router>
           <Routes>
-            <Route path="/" element={<SignupPage />} />
+            <Route path="/sign-up" element={<SignupPage />} />
             <Route path="/sign-in" element={<LoginPage />} />
-            <Route path="/stats" element={<StatisticsPage />} /> 
+            <Route path="/" element={<StatisticsPage />} /> 
             <Route path="/donate" element={<DonationForm />} /> 
             <Route path="/mydonations" element={<MyDonations />} />  
             <Route path="/donation/:id" element={<DonationDetails />} />

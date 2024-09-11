@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Bell, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
@@ -22,7 +22,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
-    navigate('/login');
+    navigate('/sign-in'); 
   };
 
   return (
@@ -31,23 +31,25 @@ export default function Header() {
       <Nav>
         <NavItem to='/stats'>Estatísticas</NavItem>
         <NavItem to='/donate'>Doar</NavItem>
-        <NavItem to='/mydonations'>Minhas doações</NavItem>
         <NavItem to='/upload'>Ler QRcode</NavItem>
         <NavItem to='/update'>Transportadora</NavItem>
       </Nav>
       <IconContainer>
-        <IconButton>
-          <Bell size={20} />
-        </IconButton>
         <UserContainer>
-          <IconButton onClick={toggleDropdown}>
-            <User size={20} />
-          </IconButton>
-          {dropdownVisible && (
-            <DropdownMenu>
-              <DropdownItem to="/profile">Meu perfil</DropdownItem>
-              <DropdownItem as="button" onClick={handleLogout}>Sair</DropdownItem>
-            </DropdownMenu>
+          {user ? (
+            <>
+              <IconButton onClick={toggleDropdown}>
+                <User size={20} />
+              </IconButton>
+              {dropdownVisible && (
+                <DropdownMenu>
+                  <DropdownItem to="/mydonations">Minhas Doações</DropdownItem>
+                  <DropdownItem onClick={handleLogout}>Sair</DropdownItem>
+                </DropdownMenu>
+              )}
+            </>
+          ) : (
+            <LoginButton onClick={() => navigate('/sign-in')}>Entrar</LoginButton>
           )}
         </UserContainer>
       </IconContainer>
@@ -103,6 +105,17 @@ const IconButton = styled.button`
   }
 `;
 
+const LoginButton = styled.button`
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: #ff8800;
+  }
+`;
 const UserContainer = styled.div`
   position: relative;
 `;
