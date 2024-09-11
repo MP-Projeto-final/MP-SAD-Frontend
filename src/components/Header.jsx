@@ -29,7 +29,7 @@ export default function Header() {
     <HeaderContainer>
       <Logo>SAD</Logo>
       <Nav>
-        <NavItem to='/stats'>Estatísticas</NavItem>
+        <NavItem to='/'>Estatísticas</NavItem>
         <NavItem to='/donate'>Doar</NavItem>
         <NavItem to='/upload'>Ler QRcode</NavItem>
         <NavItem to='/update'>Transportadora</NavItem>

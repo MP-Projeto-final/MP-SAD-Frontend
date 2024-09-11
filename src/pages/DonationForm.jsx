@@ -163,7 +163,7 @@ export default function DonationFormPage() {
         ) : (
           <QrCodeContainer>
           <Title>Doação cadastrada com sucesso!</Title>
-          <p>Escaneie o QR code para acompanhar a entrega da sua doação:</p>
+          <p>Baixe o QR code para acompanhar a entrega da sua doação:</p>
           {qrCode && (
             <>
               <QrCodeImage src={qrCode} alt="QR Code da Doação" />
@@ -268,7 +268,7 @@ const SubmitButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #444;
+    background-color: #FAA630;
   }
 
   &:focus {
