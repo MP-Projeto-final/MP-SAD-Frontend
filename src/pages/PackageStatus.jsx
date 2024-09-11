@@ -9,8 +9,8 @@ export default function QRCodeUpload() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [status, setStatus] = useState('');
   const [images, setImages] = useState([]);
-  const [qrCodeRead, setQrCodeRead] = useState(false); // Flag to check if QR code has been read
-  const [packageId, setPackageId] = useState(null); // Stores the package ID
+  const [qrCodeRead, setQrCodeRead] = useState(false);
+  const [packageId, setPackageId] = useState(null); 
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
 
@@ -35,13 +35,14 @@ export default function QRCodeUpload() {
 
       if (code) {
         console.log('QR Code data:', code.data);
-        const donationIdMatch = code.data.match(/Doacao ID: (\d+)/);
-        if (donationIdMatch) {
-          const donationId = donationIdMatch[1];
-          setPackageId(donationId); 
+
+        const packageIdMatch = code.data.match(/Pacote ID: (\d+)/); 
+        if (packageIdMatch) {
+          const pacoteId = packageIdMatch[1];
+          setPackageId(pacoteId); 
           setQrCodeRead(true); 
         } else {
-          alert('QR Code inválido ou não contém um ID de doação.');
+          alert('QR Code inválido ou não contém um ID de pacote.');
         }
       } else {
         alert('Nenhum QR Code encontrado na imagem.');
@@ -73,33 +74,31 @@ export default function QRCodeUpload() {
       alert('Por favor, preencha todos os campos e faça o upload das imagens.');
       return;
     }
-  
+
     const formData = new FormData();
-    formData.append('status', status); // Certifique-se de que o status está sendo adicionado corretamente
+    formData.append('status', status); 
     images.forEach((image) => {
       formData.append('imagem', image);
     });
-  
+
     try {
       await axios.put(`http://localhost:4000/pacotes/${packageId}/status`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       alert('Status e imagens enviados com sucesso!');
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
       alert('Erro ao enviar dados.');
     }
   };
-  
-  
+
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);  
     setImages(files);  
   };
-  
 
   return (
     <>
