@@ -19,14 +19,13 @@ const MyDonations = () => {
         return;
       }
       try {
-
         const response = await axios.get('http://localhost:4000/my', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         
-        setDonations(response.data);
+        setDonations(response.data); // Agora inclui o status do pacote
       } catch (err) {
         setError('Erro ao buscar doações');
       } finally {
@@ -48,12 +47,12 @@ const MyDonations = () => {
         <DonationList>
           {donations.map((donation, index) => (
             <DonationItem key={index}>
-              <IconWrapper bgColor={getBgColorByStatus(donation.status)}>
-                <Icon>{getIconByStatus(donation.status)}</Icon>
+              <IconWrapper bgColor={getBgColorByStatus(donation.pacote_status)}>
+                <Icon>{getIconByStatus(donation.pacote_status)}</Icon>
               </IconWrapper>
               <DonationInfo>
                 <DonationTitle>{donation.descricao}</DonationTitle>
-                <DonationStatus>{donation.status}</DonationStatus>
+                <DonationStatus>{formatStatus(donation.pacote_status)}</DonationStatus>
               </DonationInfo>
             </DonationItem>
           ))}
@@ -64,28 +63,41 @@ const MyDonations = () => {
 };
 
 const getIconByStatus = (status) => {
-  switch (status) {
-    case 'entregue':
-      return '📦';
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return '📦';  // Pacote criado
     case 'em_transito':
-      return '🚚';
-    case 'a_ser_buscado':
-      return '🏠';
+      return '🚚';  // Pacote em trânsito
+    case 'entregue':
+      return '🏠';  // Pacote entregue
     default:
-      return '❓';
+      return '❓';  // Status desconhecido
   }
 };
 
 const getBgColorByStatus = (status) => {
-  switch (status) {
-    case 'entregue':
-      return '#e8f5e9';
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return '#e8f5e9';  // Verde claro
     case 'em_transito':
-      return '#fff3e0';
-    case 'a_ser_buscado':
-      return '#e3f2fd';
+      return '#fff3e0';  // Laranja claro
+    case 'entregue':
+      return '#e3f2fd';  // Azul claro
     default:
-      return '#f5f5f5';
+      return '#f5f5f5';  // Cinza claro
+  }
+};
+
+const formatStatus = (status) => {
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return 'Criado';
+    case 'em_transito':
+      return 'Em Trânsito';
+    case 'entregue':
+      return 'Entregue';
+    default:
+      return 'Desconhecido';
   }
 };
 
@@ -144,3 +156,4 @@ const DonationStatus = styled.p`
   color: #666;
   font-size: 1rem;
 `;
+
