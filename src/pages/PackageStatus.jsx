@@ -38,8 +38,8 @@ export default function QRCodeUpload() {
         const donationIdMatch = code.data.match(/Doacao ID: (\d+)/);
         if (donationIdMatch) {
           const donationId = donationIdMatch[1];
-          setPackageId(donationId); // Stores the package ID
-          setQrCodeRead(true); // Sets the flag to true after reading the QR code
+          setPackageId(donationId); 
+          setQrCodeRead(true); 
         } else {
           alert('QR Code inválido ou não contém um ID de doação.');
         }
@@ -68,38 +68,38 @@ export default function QRCodeUpload() {
     setStatus(event.target.value);
   };
 
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const newImages = files.map((file) => URL.createObjectURL(file)); // Converts file to URL for preview
-    setImages([...images, ...newImages]);
-  };
-
-  // Function to send status and images
   const handleSend = async () => {
     if (!packageId || !status || images.length === 0) {
       alert('Por favor, preencha todos os campos e faça o upload das imagens.');
       return;
     }
-
+  
     const formData = new FormData();
-    formData.append('status', status);
-    images.forEach((image, index) => {
-      formData.append(`imagens`, image); // Sends all images
+    formData.append('status', status); // Certifique-se de que o status está sendo adicionado corretamente
+    images.forEach((image) => {
+      formData.append('imagem', image);
     });
-
+  
     try {
       await axios.put(`http://localhost:4000/pacotes/${packageId}/status`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
       alert('Status e imagens enviados com sucesso!');
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
       alert('Erro ao enviar dados.');
     }
   };
+  
+  
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);  
+    setImages(files);  
+  };
+  
 
   return (
     <>
@@ -127,7 +127,7 @@ export default function QRCodeUpload() {
           </PreviewContainer>
         )}
 
-        {qrCodeRead && ( // Show only if QR code is read
+        {qrCodeRead && (
           <>
             <StatusSelect value={status} onChange={handleStatusChange}>
               <option value="">Selecione o status</option>
@@ -160,8 +160,6 @@ export default function QRCodeUpload() {
     </>
   );
 }
-
-// Styled components remain the same as before
 
 const PageContainer = styled.div`
   display: flex;

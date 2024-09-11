@@ -66,10 +66,15 @@ export default function DonationFormPage() {
   };
 
   const handleDownloadQrCode = () => {
+    if (!qrCode) {
+      alert('QR code não disponível');
+      return;
+    }
+  
     const link = document.createElement('a');
-    link.href = qrCode; 
+    link.href = qrCode;  // Certifique-se de que qrCode é uma string válida com 'data:image/png;base64,...'
     link.download = 'qrcode.png'; 
-    link.click(); 
+    link.click();
   };
 
   return (
@@ -160,10 +165,14 @@ export default function DonationFormPage() {
           <QrCodeContainer>
           <Title>Doação cadastrada com sucesso!</Title>
           <p>Escaneie o QR code para acompanhar a entrega da sua doação:</p>
-          {qrCode && <QrCodeImage src={qrCode} alt="QR Code da Doação" />}
-          <DownloadButton onClick={handleDownloadQrCode}>
-            Baixar QR Code
-          </DownloadButton>
+          {qrCode && (
+            <>
+              <QrCodeImage src={qrCode} alt="QR Code da Doação" />
+              <DownloadButton onClick={handleDownloadQrCode}>
+                Baixar QR Code
+              </DownloadButton>
+            </>
+          )}
         </QrCodeContainer>
         )}
       </Content>
