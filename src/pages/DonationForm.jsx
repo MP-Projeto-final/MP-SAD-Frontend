@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import axios from 'axios';
 
+// Lista de estados brasileiros
+const estadosBrasil = [
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+];
+
 export default function DonationFormPage() {
   const [descricao, setDescricao] = useState('');
   const [cep, setCep] = useState('');
@@ -11,7 +16,8 @@ export default function DonationFormPage() {
   const [complemento, setComplemento] = useState('');
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
-  const [estado, setEstado] = useState('');
+  const [estadoDestino, setEstadoDestino] = useState('');
+  const [estadoOrigem, setEstadoOrigem] = useState(''); // Novo campo para origem
   const [qrCode, setQrCode] = useState(null); 
   const [formVisible, setFormVisible] = useState(true); 
 
@@ -34,7 +40,8 @@ export default function DonationFormPage() {
       destino_complemento: complemento,
       destino_bairro: bairro,
       destino_cidade: cidade,
-      destino_estado: estado,
+      destino_estado: estadoDestino,
+      origem_estado: estadoOrigem // Inclui o estado de origem
     };
 
     try {
@@ -78,6 +85,18 @@ export default function DonationFormPage() {
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
             />
+            <Label htmlFor="estadoOrigem">Estado de Origem:</Label>
+            <Select
+              id="estadoOrigem"
+              value={estadoOrigem}
+              onChange={(e) => setEstadoOrigem(e.target.value)}
+            >
+              <option value="">Selecione o estado</option>
+              {estadosBrasil.map((estado) => (
+                <option key={estado} value={estado}>{estado}</option>
+              ))}
+            </Select>
+
             <Label htmlFor="cep">Endereço de destino:</Label>
             <Input
               id="cep"
@@ -110,11 +129,18 @@ export default function DonationFormPage() {
               value={cidade}
               onChange={(e) => setCidade(e.target.value)}
             />
-            <Input
-              placeholder="Estado"
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-            />
+            <Label htmlFor="estadoDestino">Estado de Destino:</Label>
+            <Select
+              id="estadoDestino"
+              value={estadoDestino}
+              onChange={(e) => setEstadoDestino(e.target.value)}
+            >
+              <option value="">Selecione o estado</option>
+              {estadosBrasil.map((estado) => (
+                <option key={estado} value={estado}>{estado}</option>
+              ))}
+            </Select>
+
             <SubmitButton type="submit">Cadastrar</SubmitButton>
           </Form>
         ) : (
@@ -174,6 +200,18 @@ const Input = styled.input`
   }
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  &:focus {
+    outline: none;
+    border-color: #ffa500;
+    box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+  }
+`;
+
 const DownloadButton = styled.button`
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -219,9 +257,9 @@ const SubmitButton = styled.button`
 `;
 
 const QrCodeContainer = styled.div`
-display: flex;  
-flex-direction: column;
-align-items: center;
+  display: flex;  
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 `;
 
