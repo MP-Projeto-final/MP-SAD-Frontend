@@ -62,6 +62,7 @@ const formatDateTime = (dateString) => {
 export default function DonationDetailsPage() {
   const { id } = useParams(); 
   const [donationDetails, setDonationDetails] = useState(null); 
+  const [image, setImage] = useState(null); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
   const navigate = useNavigate(); 
@@ -78,15 +79,28 @@ export default function DonationDetailsPage() {
       }
 
       try {
+
         const response = await axios.get(`http://localhost:4000/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         setDonationDetails(response.data);
+
+        const pacoteId = response.data.pacote_id;
+
+        const imageResponse = await axios.get(`http://localhost:4000/media/${pacoteId}`);
+        const imageData = imageResponse.data[0]; 
+
+
+        const base64Image = `data:${imageData.tipo};base64,${btoa(
+          String.fromCharCode(...new Uint8Array(imageData.imagem.data))
+        )}`;
+        
+        setImage(base64Image);
         setLoading(false);
       } catch (err) {
-        setError('Erro ao buscar detalhes da doação');
+        setError('Erro ao buscar detalhes da doação ou mídia.');
         setLoading(false);
       }
     };
@@ -98,16 +112,11 @@ export default function DonationDetailsPage() {
     return <p>Carregando...</p>;
   }
 
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  const hasImages = donationDetails?.imagens?.length > 0;
-
   return (
     <PageContainer>
       <Header />
       <Title>Detalhes da doação</Title>
+
       {donationDetails && (
         <DonationCard>
           <DonationHeader>
@@ -121,14 +130,13 @@ export default function DonationDetailsPage() {
           </DonationHeader>
 
           <DetailsRow>
-          <Clock size={30} />
-          <DetailText>
-            Criado em: {donationDetails.data_enviado ? formatDateTime(donationDetails.data_enviado) : 'Ainda não enviado'}
-            <br />
-            Última atualização: {donationDetails.data_status ? formatDateTime(donationDetails.data_status) : 'Ainda não entregue'}
-          </DetailText>
-        </DetailsRow>
-
+            <Clock size={30} />
+            <DetailText>
+              Criado em: {donationDetails.data_enviado ? formatDateTime(donationDetails.data_enviado) : 'Ainda não enviado'}
+              <br />
+              Última atualização: {donationDetails.data_status ? formatDateTime(donationDetails.data_status) : 'Ainda não entregue'}
+            </DetailText>
+          </DetailsRow>
 
           <DetailsRow>
             <Home size={30} />
@@ -144,12 +152,10 @@ export default function DonationDetailsPage() {
           <DescriptionInput defaultValue={donationDetails.descricao} readOnly />
 
           <ImageGrid>
-            {hasImages ? (
-              donationDetails.imagens.map((imagem, index) => (
-                <ImagePlaceholder key={index}>
-                  <img src={imagem} alt={`Imagem ${index + 1}`} style={{ width: '100%', height: '100%' }} />
-                </ImagePlaceholder>
-              ))
+            {image ? (
+              <ImagePlaceholder>
+                <img src={image} alt="Imagem da doação" style={{ width: '100%', height: 'auto' }} />
+              </ImagePlaceholder>
             ) : (
               <NoImagesPlaceholder>Sem fotos disponíveis</NoImagesPlaceholder>
             )}
@@ -159,6 +165,7 @@ export default function DonationDetailsPage() {
     </PageContainer>
   );
 }
+
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
   border-radius: 10px;
@@ -231,9 +238,10 @@ const DescriptionInput = styled.textarea`
 `;
 
 const ImageGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ImagePlaceholder = styled.div`
@@ -249,7 +257,7 @@ const ImagePlaceholder = styled.div`
 `;
 
 const NoImagesPlaceholder = styled.div`
-  grid-column: span 2;
+  grid-column: span 1;
   text-align: center;
   font-size: 1.2em;
   color: #999;

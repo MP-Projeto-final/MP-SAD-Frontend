@@ -8,19 +8,22 @@ import Header from '../components/Header';
 export default function QRCodeUpload() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [status, setStatus] = useState('');
-  const [image, setImage] = useState(null); 
+  const [qrCodeImage, setQrCodeImage] = useState(null); // Armazenar imagem do QR Code
+  const [uploadedImage, setUploadedImage] = useState(null); // Armazenar imagem que será enviada
   const [qrCodeRead, setQrCodeRead] = useState(false);
   const [packageId, setPackageId] = useState(null); 
-  const fileInputRef = useRef(null);
+  const qrCodeInputRef = useRef(null);
+  const imageInputRef = useRef(null);
 
+  // Função para ler o QR Code
   const readQRCode = async () => {
-    if (!previewUrl) {
+    if (!qrCodeImage) {
       alert('Por favor, faça o upload de uma imagem de QR code.');
       return;
     }
 
     const image = new Image();
-    image.src = previewUrl;
+    image.src = previewUrl; // Usando o URL de visualização gerado para o QR Code
 
     image.onload = () => {
       const canvas = document.createElement('canvas');
@@ -48,23 +51,33 @@ export default function QRCodeUpload() {
     };
   };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0]; 
+  // Função para lidar com o upload da imagem do QR Code
+  const handleQRCodeUpload = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      setImage(file);  
-      setPreviewUrl(URL.createObjectURL(file)); 
+      setQrCodeImage(file); // Armazena a imagem do QR Code
+      setPreviewUrl(URL.createObjectURL(file)); // Gera a URL para visualização
     }
   };
 
+  // Função para lidar com o upload da imagem que será enviada
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(file); // Armazena a imagem que será enviada
+    }
+  };
+
+  // Função para enviar o status e a imagem
   const handleSend = async () => {
-    if (!packageId || !status || !image) {
+    if (!packageId || !status || !uploadedImage) {
       alert('Por favor, preencha todos os campos e faça o upload da imagem.');
       return;
     }
 
     const formData = new FormData();
     formData.append('status', status); 
-    formData.append('imagem', image);  
+    formData.append('imagem', uploadedImage);  // Usa a imagem enviada pelo usuário
 
     try {
       await axios.put(`http://localhost:4000/pacotes/${packageId}/status`, formData, {
@@ -84,24 +97,24 @@ export default function QRCodeUpload() {
     <>
       <Header />
       <PageContainer>
-        <Title>Faça upload do seu QR Code</Title>
-        <UploadContainer onClick={() => fileInputRef.current.click()}>
+        <Title>Faça upload do QR Code para obter o Pacote ID</Title>
+        <UploadContainer onClick={() => qrCodeInputRef.current.click()}>
           <UploadInput
             type="file"
             accept="image/*"
-            onChange={handleImageUpload}
-            ref={fileInputRef}
+            onChange={handleQRCodeUpload}
+            ref={qrCodeInputRef}
             id="qr-code-upload"
           />
           <UploadLabel htmlFor="qr-code-upload">
             <Upload size={48} color="#007bff" />
-            <UploadText>Clique aqui para fazer upload</UploadText>
+            <UploadText>Carregar QR Code</UploadText>
           </UploadLabel>
         </UploadContainer>
 
         {previewUrl && (
           <PreviewContainer>
-            <PreviewImage src={previewUrl} alt="Uploaded QR Code" />
+            <PreviewImage src={previewUrl} alt="QR Code carregado" />
             <Button onClick={readQRCode}>Ler QR Code</Button>
           </PreviewContainer>
         )}
@@ -114,6 +127,23 @@ export default function QRCodeUpload() {
               <option value="entregue">Entregue</option>
               <option value="falha_entrega">Falha na Entrega</option>
             </StatusSelect>
+
+            <Title>Carregar a Imagem que será enviada</Title>
+            <UploadContainer onClick={() => imageInputRef.current.click()}>
+              <UploadInput
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                ref={imageInputRef}
+                id="image-upload"
+              />
+              <UploadLabel htmlFor="image-upload">
+                <Upload size={48} color="#007bff" />
+                <UploadText>Carregar Imagem</UploadText>
+              </UploadLabel>
+            </UploadContainer>
+
+            {uploadedImage && <p>Imagem pronta para ser enviada.</p>}
 
             <Button onClick={handleSend}>Enviar</Button>
           </>
