@@ -4,18 +4,19 @@ import { Upload } from 'lucide-react';
 import jsQR from 'jsqr';
 import axios from 'axios';
 import Header from '../components/Header';
-
+import { useNavigate } from 'react-router-dom';
 export default function QRCodeUpload() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [status, setStatus] = useState('');
-  const [qrCodeImage, setQrCodeImage] = useState(null); // Armazenar imagem do QR Code
-  const [uploadedImage, setUploadedImage] = useState(null); // Armazenar imagem que será enviada
+  const [qrCodeImage, setQrCodeImage] = useState(null); 
+  const [uploadedImage, setUploadedImage] = useState(null);
   const [qrCodeRead, setQrCodeRead] = useState(false);
   const [packageId, setPackageId] = useState(null); 
+  const [uploadedImageName, setUploadedImageName] = useState(''); 
   const qrCodeInputRef = useRef(null);
   const imageInputRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Função para ler o QR Code
   const readQRCode = async () => {
     if (!qrCodeImage) {
       alert('Por favor, faça o upload de uma imagem de QR code.');
@@ -23,7 +24,7 @@ export default function QRCodeUpload() {
     }
 
     const image = new Image();
-    image.src = previewUrl; // Usando o URL de visualização gerado para o QR Code
+    image.src = previewUrl; 
 
     image.onload = () => {
       const canvas = document.createElement('canvas');
@@ -51,24 +52,22 @@ export default function QRCodeUpload() {
     };
   };
 
-  // Função para lidar com o upload da imagem do QR Code
   const handleQRCodeUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setQrCodeImage(file); // Armazena a imagem do QR Code
-      setPreviewUrl(URL.createObjectURL(file)); // Gera a URL para visualização
+      setQrCodeImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  // Função para lidar com o upload da imagem que será enviada
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setUploadedImage(file); // Armazena a imagem que será enviada
+      setUploadedImage(file);
+      setUploadedImageName(file.name);
     }
   };
 
-  // Função para enviar o status e a imagem
   const handleSend = async () => {
     if (!packageId || !status || !uploadedImage) {
       alert('Por favor, preencha todos os campos e faça o upload da imagem.');
@@ -77,7 +76,7 @@ export default function QRCodeUpload() {
 
     const formData = new FormData();
     formData.append('status', status); 
-    formData.append('imagem', uploadedImage);  // Usa a imagem enviada pelo usuário
+    formData.append('imagem', uploadedImage); 
 
     try {
       await axios.put(`http://localhost:4000/pacotes/${packageId}/status`, formData, {
@@ -85,8 +84,8 @@ export default function QRCodeUpload() {
           'Content-Type': 'multipart/form-data',
         },
       });
-
       alert('Status e imagem enviados com sucesso!');
+      navigate('/');
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
       alert('Erro ao enviar dados.');
@@ -97,7 +96,7 @@ export default function QRCodeUpload() {
     <>
       <Header />
       <PageContainer>
-        <Title>Faça upload do QR Code para obter o Pacote ID</Title>
+        <Title>Faça upload do QR Code para atualizar o status do pacote</Title>
         <UploadContainer onClick={() => qrCodeInputRef.current.click()}>
           <UploadInput
             type="file"
@@ -107,7 +106,7 @@ export default function QRCodeUpload() {
             id="qr-code-upload"
           />
           <UploadLabel htmlFor="qr-code-upload">
-            <Upload size={48} color="#007bff" />
+            <Upload size={48} color="#FAA630" />
             <UploadText>Carregar QR Code</UploadText>
           </UploadLabel>
         </UploadContainer>
@@ -127,7 +126,6 @@ export default function QRCodeUpload() {
               <option value="entregue">Entregue</option>
               <option value="falha_entrega">Falha na Entrega</option>
             </StatusSelect>
-
             <Title>Carregar a Imagem que será enviada</Title>
             <UploadContainer onClick={() => imageInputRef.current.click()}>
               <UploadInput
@@ -138,12 +136,12 @@ export default function QRCodeUpload() {
                 id="image-upload"
               />
               <UploadLabel htmlFor="image-upload">
-                <Upload size={48} color="#007bff" />
+                <Upload size={48} color="#FAA630" />
                 <UploadText>Carregar Imagem</UploadText>
               </UploadLabel>
             </UploadContainer>
 
-            {uploadedImage && <p>Imagem pronta para ser enviada.</p>}
+            {uploadedImage && <ImgName>Imagem selecionada: {uploadedImageName}</ImgName>}
 
             <Button onClick={handleSend}>Enviar</Button>
           </>
@@ -161,8 +159,10 @@ const PageContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #333;
-  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  margin-top: 20px;
 `;
 
 const UploadContainer = styled.div`
@@ -177,7 +177,7 @@ const UploadContainer = styled.div`
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #007bff;
+    border-color: #FAA630;
   }
 `;
 
@@ -198,6 +198,8 @@ const UploadText = styled.span`
 `;
 
 const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-top: 2rem;
   max-width: 300px;
 `;
@@ -210,7 +212,7 @@ const PreviewImage = styled.img`
 const Button = styled.button`
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+  background-color: #FAA630;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -225,4 +227,9 @@ const StatusSelect = styled.select`
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+`;
+
+const ImgName = styled.p`
+  margin-top: 1rem;
+  color: #666;
 `;
