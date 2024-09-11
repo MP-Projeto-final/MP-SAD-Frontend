@@ -1,17 +1,14 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Upload } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; 
 import jsQR from 'jsqr';
-import axios from 'axios';
 import Header from '../components/Header';
 
 export default function QRCodeUpload() {
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [status, setStatus] = useState('');
-  const [image, setImage] = useState(null); 
-  const [qrCodeRead, setQrCodeRead] = useState(false);
-  const [packageId, setPackageId] = useState(null); 
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const readQRCode = async () => {
     if (!previewUrl) {
@@ -34,13 +31,12 @@ export default function QRCodeUpload() {
 
       if (code) {
         console.log('QR Code data:', code.data);
-        const packageIdMatch = code.data.match(/Pacote ID: (\d+)/); 
-        if (packageIdMatch) {
-          const pacoteId = packageIdMatch[1];
-          setPackageId(pacoteId); 
-          setQrCodeRead(true); 
+        const donationIdMatch = code.data.match(/Doacao ID: (\d+)/);
+        if (donationIdMatch) {
+          const donationId = donationIdMatch[1];
+          navigate(`/donation/${donationId}`); 
         } else {
-          alert('QR Code inválido ou não contém um ID de pacote.');
+          alert('QR Code inválido ou não contém um ID de doação.');
         }
       } else {
         alert('Nenhum QR Code encontrado na imagem.');
@@ -48,36 +44,19 @@ export default function QRCodeUpload() {
     };
   };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0]; 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      setImage(file);  
-      setPreviewUrl(URL.createObjectURL(file)); 
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleSend = async () => {
-    if (!packageId || !status || !image) {
-      alert('Por favor, preencha todos os campos e faça o upload da imagem.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('status', status); 
-    formData.append('imagem', image);  
-
-    try {
-      await axios.put(`http://localhost:4000/pacotes/${packageId}/status`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      alert('Status e imagem enviados com sucesso!');
-    } catch (error) {
-      console.error('Erro ao enviar dados:', error);
-      alert('Erro ao enviar dados.');
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
   };
 
   return (
@@ -85,16 +64,16 @@ export default function QRCodeUpload() {
       <Header />
       <PageContainer>
         <Title>Faça upload do seu QR Code</Title>
-        <UploadContainer onClick={() => fileInputRef.current.click()}>
+        <UploadContainer onClick={handleUploadClick}>
           <UploadInput
             type="file"
             accept="image/*"
-            onChange={handleImageUpload}
+            onChange={handleFileChange}
             ref={fileInputRef}
             id="qr-code-upload"
           />
           <UploadLabel htmlFor="qr-code-upload">
-            <Upload size={48} color="#007bff" />
+            <Upload size={48} color="#FAA630" />
             <UploadText>Clique aqui para fazer upload</UploadText>
           </UploadLabel>
         </UploadContainer>
@@ -102,37 +81,27 @@ export default function QRCodeUpload() {
         {previewUrl && (
           <PreviewContainer>
             <PreviewImage src={previewUrl} alt="Uploaded QR Code" />
-            <Button onClick={readQRCode}>Ler QR Code</Button>
+            <Button onClick={readQRCode}>Ler QR Code</Button> 
           </PreviewContainer>
-        )}
-
-        {qrCodeRead && (
-          <>
-            <StatusSelect value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value="">Selecione o status</option>
-              <option value="em_transito">Em Trânsito</option>
-              <option value="entregue">Entregue</option>
-              <option value="falha_entrega">Falha na Entrega</option>
-            </StatusSelect>
-
-            <Button onClick={handleSend}>Enviar</Button>
-          </>
         )}
       </PageContainer>
     </>
   );
 }
 
+
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  font-family: Arial, sans-serif;
 `;
 
 const Title = styled.h1`
-  color: #333;
-  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 `;
 
 const UploadContainer = styled.div`
@@ -147,7 +116,7 @@ const UploadContainer = styled.div`
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #007bff;
+    border-color: #FAA630;
   }
 `;
 
@@ -168,6 +137,9 @@ const UploadText = styled.span`
 `;
 
 const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 2rem;
   max-width: 300px;
 `;
@@ -175,24 +147,21 @@ const PreviewContainer = styled.div`
 const PreviewImage = styled.img`
   max-width: 100%;
   border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const Button = styled.button`
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+  background-color: black;
   color: #fff;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
-`;
-
-const StatusSelect = styled.select`
-  margin-top: 1.5rem;
-  padding: 0.75rem;
-  width: 100%;
-  max-width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
   font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color:#FAA630 ;
+  }
 `;
