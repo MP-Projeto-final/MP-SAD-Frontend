@@ -5,6 +5,60 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header'; 
 
+const getIconByStatus = (status) => {
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return '📦';  
+    case 'em_transito':
+      return '🚚';  
+    case 'entregue':
+      return '🏠';  
+    default:
+      return '❓';  
+  }
+};
+
+const getBgColorByStatus = (status) => {
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return '#e8f5e9';  
+    case 'em_transito':
+      return '#fff3e0';  
+    case 'entregue':
+      return '#e3f2fd';  
+    default:
+      return '#f5f5f5'; 
+  }
+};
+
+const formatStatus = (status) => {
+  switch (status.toLowerCase()) {
+    case 'criado':
+      return 'Criado';
+    case 'em_transito':
+      return 'Em Trânsito';
+    case 'entregue':
+      return 'Entregue';
+    default:
+      return 'Desconhecido';
+  }
+};
+
+const formatDateTime = (dateString) => {
+  if (!dateString) return 'Data não disponível';
+  
+  const date = new Date(dateString);
+  
+  return date.toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
+
 export default function DonationDetailsPage() {
   const { id } = useParams(); 
   const [donationDetails, setDonationDetails] = useState(null); 
@@ -48,34 +102,36 @@ export default function DonationDetailsPage() {
     return <p>{error}</p>;
   }
 
+  const hasImages = donationDetails?.imagens?.length > 0;
+
   return (
     <PageContainer>
       <Header />
       <Title>Detalhes da doação</Title>
-
       {donationDetails && (
         <DonationCard>
           <DonationHeader>
-            <IconWrapper>
-              <Box size={24} />
+            <IconWrapper bgColor={getBgColorByStatus(donationDetails.status)}>
+              <span>{getIconByStatus(donationDetails.status)}</span>
             </IconWrapper>
             <DonationInfo>
               <DonationTitle>{donationDetails.descricao}</DonationTitle>
-              <DonationStatus>{donationDetails.status}</DonationStatus>
+              <DonationStatus>{formatStatus(donationDetails.status)}</DonationStatus>
             </DonationInfo>
           </DonationHeader>
 
           <DetailsRow>
-            <Clock size={18} />
-            <DetailText>
-              Saída: {donationDetails.data_enviado ? donationDetails.data_enviado : 'Ainda não enviado'}
-              <br />
-              Chegada: {donationDetails.data_status ? donationDetails.data_status : 'Ainda não entregue'}
-            </DetailText>
-          </DetailsRow>
+          <Clock size={30} />
+          <DetailText>
+            Criado em: {donationDetails.data_enviado ? formatDateTime(donationDetails.data_enviado) : 'Ainda não enviado'}
+            <br />
+            Última atualização: {donationDetails.data_status ? formatDateTime(donationDetails.data_status) : 'Ainda não entregue'}
+          </DetailText>
+        </DetailsRow>
+
 
           <DetailsRow>
-            <Home size={18} />
+            <Home size={30} />
             <DetailText>
               {donationDetails.destino_cidade} - {donationDetails.destino_estado}
               <br />
@@ -88,26 +144,31 @@ export default function DonationDetailsPage() {
           <DescriptionInput defaultValue={donationDetails.descricao} readOnly />
 
           <ImageGrid>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>Imagem</ImagePlaceholder>
-            <ImagePlaceholder>+1</ImagePlaceholder>
+            {hasImages ? (
+              donationDetails.imagens.map((imagem, index) => (
+                <ImagePlaceholder key={index}>
+                  <img src={imagem} alt={`Imagem ${index + 1}`} style={{ width: '100%', height: '100%' }} />
+                </ImagePlaceholder>
+              ))
+            ) : (
+              <NoImagesPlaceholder>Sem fotos disponíveis</NoImagesPlaceholder>
+            )}
           </ImageGrid>
         </DonationCard>
       )}
     </PageContainer>
   );
 }
-
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
-
   border-radius: 10px;
 `;
 
 const Title = styled.h1`
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 const DonationCard = styled.div`
@@ -125,7 +186,7 @@ const DonationHeader = styled.div`
 `;
 
 const IconWrapper = styled.div`
-  background-color: #c8e6c9;
+  background-color: ${(props) => props.bgColor};
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -185,4 +246,12 @@ const ImagePlaceholder = styled.div`
   align-items: center;
   font-size: 0.9em;
   color: #666;
+`;
+
+const NoImagesPlaceholder = styled.div`
+  grid-column: span 2;
+  text-align: center;
+  font-size: 1.2em;
+  color: #999;
+  padding: 20px;
 `;

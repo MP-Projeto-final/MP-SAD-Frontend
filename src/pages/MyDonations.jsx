@@ -25,7 +25,7 @@ const MyDonations = () => {
           },
         });
         
-        setDonations(response.data); // Agora inclui o status do pacote
+        setDonations(response.data);
       } catch (err) {
         setError('Erro ao buscar doações');
       } finally {
