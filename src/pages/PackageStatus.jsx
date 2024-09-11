@@ -104,7 +104,7 @@ export default function QRCodeUpload() {
     <>
       <Header />
       <PageContainer>
-        <Title>Upload QR Code Image</Title>
+        <Title>Faça upload do seu QR Code</Title>
         <UploadContainer onClick={handleUploadClick}>
           <UploadInput
             type="file"
@@ -115,7 +115,7 @@ export default function QRCodeUpload() {
           />
           <UploadLabel htmlFor="qr-code-upload">
             <Upload size={48} color="#007bff" />
-            <UploadText>Click or drag to upload QR code image</UploadText>
+            <UploadText>Clique aqui para fazer upload</UploadText>
           </UploadLabel>
         </UploadContainer>
 

@@ -40,16 +40,21 @@ export default function StatisticsPage() {
         <Card>
           <CardTitle>De onde estão doando</CardTitle>
           <CardList>
-            {statistics.localidadesDeOrigem?.map((local, index) => ( // Verifique se o campo está definido
-              <CardListItem key={index}>{local.destino_cidade} - {local.destino_estado}</CardListItem>
+            {statistics.localidadesDeOrigem?.map((local, index) => ( 
+              <CardListItem key={index}>
+                {local.origem_cidade ? `${local.origem_cidade} - ${local.origem_estado}` : 'Local desconhecido'}
+              </CardListItem>
             ))}
           </CardList>
         </Card>
+
         <Card>
           <CardTitle>Onde estão recebendo</CardTitle>
           <CardList>
-            {statistics.localidadesDeDestino?.map((local, index) => ( // Verifique se o campo está definido
-              <CardListItem key={index}>{local.destino_cidade} - {local.destino_estado}</CardListItem>
+            {statistics.localidadesDeDestino?.map((local, index) => ( 
+              <CardListItem key={index}>
+                {local.destino_cidade ? `${local.destino_cidade} - ${local.destino_estado}` : 'Local desconhecido'}
+              </CardListItem>
             ))}
           </CardList>
         </Card>
