@@ -15,9 +15,10 @@ export default function DonationFormPage() {
   const [numero, setNumero] = useState('');
   const [complemento, setComplemento] = useState('');
   const [bairro, setBairro] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [estadoDestino, setEstadoDestino] = useState('');
-  const [estadoOrigem, setEstadoOrigem] = useState(''); // Novo campo para origem
+  const [cidadeDestino, setCidadeDestino] = useState(''); // Novo campo para cidade de destino
+  const [estadoDestino, setEstadoDestino] = useState(''); // Novo campo para estado de destino
+  const [cidadeOrigem, setCidadeOrigem] = useState(''); // Novo campo para cidade de origem
+  const [estadoOrigem, setEstadoOrigem] = useState(''); // Novo campo para estado de origem
   const [qrCode, setQrCode] = useState(null); 
   const [formVisible, setFormVisible] = useState(true); 
 
@@ -39,8 +40,9 @@ export default function DonationFormPage() {
       destino_numero: numero,
       destino_complemento: complemento,
       destino_bairro: bairro,
-      destino_cidade: cidade,
-      destino_estado: estadoDestino,
+      destino_cidade: cidadeDestino, // Inclui a cidade de destino
+      destino_estado: estadoDestino, // Inclui o estado de destino
+      origem_cidade: cidadeOrigem, // Inclui a cidade de origem
       origem_estado: estadoOrigem // Inclui o estado de origem
     };
 
@@ -85,6 +87,7 @@ export default function DonationFormPage() {
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
             />
+
             <Label htmlFor="estadoOrigem">Estado de Origem:</Label>
             <Select
               id="estadoOrigem"
@@ -96,6 +99,14 @@ export default function DonationFormPage() {
                 <option key={estado} value={estado}>{estado}</option>
               ))}
             </Select>
+
+            <Label htmlFor="cidadeOrigem">Cidade de Origem:</Label>
+            <Input
+              id="cidadeOrigem"
+              placeholder="Cidade de Origem"
+              value={cidadeOrigem}
+              onChange={(e) => setCidadeOrigem(e.target.value)}
+            />
 
             <Label htmlFor="cep">Endereço de destino:</Label>
             <Input
@@ -124,10 +135,12 @@ export default function DonationFormPage() {
               value={bairro}
               onChange={(e) => setBairro(e.target.value)}
             />
+            <Label htmlFor="cidadeDestino">Cidade de Destino:</Label>
             <Input
-              placeholder="Cidade"
-              value={cidade}
-              onChange={(e) => setCidade(e.target.value)}
+              id="cidadeDestino"
+              placeholder="Cidade de Destino"
+              value={cidadeDestino}
+              onChange={(e) => setCidadeDestino(e.target.value)}
             />
             <Label htmlFor="estadoDestino">Estado de Destino:</Label>
             <Select
